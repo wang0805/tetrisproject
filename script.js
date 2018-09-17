@@ -1,12 +1,58 @@
 const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
-context.scale(100,100);
+context.scale(50,50);
 
-const matrix = [
-	[1,1,1],
-	[1,1,1],
-	[1,1,1],
-];
+//setting first instance for player
+var rand = Math.floor(Math.random()*5+1);
+var matrix = createTetris(rand);
+
+var player = {
+	pos: {x: 5, y:0},
+	matrix: matrix,
+}
+
+function createTetris(rand){
+	var matrix = [];
+	switch (rand){
+		//use different numbers so we can reference them to change colors later on
+		case 1:
+			matrix = [
+				[0,0,0],
+				[1,1,1],
+				[0,1,0],
+			];
+			break;
+		case 2:
+			matrix = [
+				[2,2,0],
+				[0,2,2],
+				[0,0,0],
+			];
+			break;
+		case 3:
+			matrix = [
+				[3,3],
+				[3,3],
+			];
+			break;
+		case 4:
+			matrix = [
+				[0,4,0,0],
+				[0,4,0,0],
+				[0,4,4,0],
+				[0,0,0,0],
+			];
+			break;
+		case 5:
+			matrix = [
+				[0,5,0,0],
+				[0,5,0,0],
+				[0,5,0,0],
+				[0,5,0,0],
+			];
+	};
+	return matrix;
+}
 
 function createMatrix(w,h){
 	var boardMatrix = [];
@@ -56,28 +102,25 @@ function drawMatrix(matrix, offset){
 	matrix.forEach(function(row,y){
 		row.forEach(function(value,x){
 			if(value !== 0){
-				context.fillStyle = "red";
+				// context.fillStyle = "#E0FFFF";
+				context.fillStyle = colors[value];
 				context.fillRect(x+offset.x,y+offset.y,1,1);
 			}
 		});
 	});
 }
-
-var player = {
-	pos: {x: 5, y:0},
-	matrix: matrix,
-}
-
+var colors = [null,"#DC143C","#E0FFFF","#8FBC8F","#F0E68C","#C71585"];
+//key pressing function
 window.addEventListener('keydown',function(event){
 	//you cant use this in this case, can console.log(this) to see why
 	//console.log(event); 
 	if(event.keyCode ===37){
 		player.pos.x-=1;
-		console.log(player.pos.x);
+		//console.log(player.pos.x);
 	}	
 	else if(event.keyCode ===39){
 		player.pos.x+=1;
-		console.log(player.pos.x);
+		//console.log(player.pos.x);
 	}
 	else if(event.keyCode ===40){
 		player.pos.y+=1;
@@ -88,6 +131,17 @@ window.addEventListener('keydown',function(event){
 var dropCounter = 0;
 var dropInterval = 1000;
 var lastTime = 0;
+
+function clearRow(){
+	for (var i=0;i<boardMatrix.length;i++){
+		//console.table(boardMatrix);
+		//*can only check x > or < conditional and not = to
+		if(boardMatrix[i].every(x=>x>0)){
+			boardMatrix.splice(i,1);
+			boardMatrix.splice(0,0,new Array(12).fill(0));
+		}
+	}
+}
 //time is a build in parameter for requestAnimationFrame where it increments time
 //set default time = 0 otherwise first value will be NaN and we need to use isNaN() on deltaTime so dropcounter dont add a NaN and kill this operation
 function update(time=0){
@@ -101,7 +155,12 @@ function update(time=0){
  		if (collide(boardMatrix,player)===true){
  			player.pos.y -=1; //use debugger to see how many rows to deduct, in this case the block has to cross over the grid to detect collision 
  		 	addPlayerToBoard(boardMatrix,player);
- 			player.pos.y=0;
+ 		 	//remove rows that are filled
+ 		 	clearRow();
+ 			player.pos = {x:5, y:0};
+ 			rand = Math.floor(Math.random()*5+1);
+ 			matrix = createTetris(rand)
+ 			player.matrix = matrix;
  		}
  	}
 	//everytime update using requestAnimationFrame, we set canvas back to black
@@ -110,8 +169,17 @@ function update(time=0){
 	drawMatrix(player.matrix, player.pos);
 	drawMatrix(boardMatrix, {x:0,y:0});
 	requestAnimationFrame(update);
-
 	//console.log(player.pos.y)
 }
 
 update();
+
+function randomColor(){
+	var key = "0123456789ABCDEF";
+	var color = "#";
+	for (var i=0;i<6;i++){
+		var rand = Math.floor(Math.random()*16);
+		color+=key.charAt(rand);
+	}
+	return color;
+}
