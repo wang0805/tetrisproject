@@ -1,6 +1,5 @@
 div {
-	margin: 0 auto;
-	text-align: center;
+	margin: 10px 10px;
 }
 
 
@@ -8,4 +7,16 @@ div {
 	border: 5px solid grey;
 	padding: 1px;
 	border-radius: 30px;
+}
+
+.time {
+	font-size: 80px;
+	font-family: 'Lobster',sans-serif;
+	margin: 0 auto;
+}
+
+.score {
+	font-size: 80px;
+	font-family: 'Lobster',sans-serif;
+	margin: 0 auto;
 }
