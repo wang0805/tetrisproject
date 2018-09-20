@@ -1,10 +1,18 @@
 const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
 context.scale(50,50);
+var mySound;
+var colSound;
+var rowSound;
 
 //setting first instance for player
 var rand = Math.floor(Math.random()*7+1);
 var matrix = createTetris(rand);
+
+var startEle = document.getElementsByClassName("start")[0];
+startEle.innerHTML = "START";
+startEle.addEventListener('click', start);
+
 
 var player = {
 	pos: {x: 5, y:0},
@@ -26,13 +34,13 @@ function createTetris(rand){
 			matrix = [
 				[2,2,0],
 				[0,2,2],
-				[0,0,0],
+				[0,0,0]
 			];
 			break;
 		case 3:
 			matrix = [
 				[3,3],
-				[3,3],
+				[3,3]
 			];
 			break;
 		case 4:
@@ -40,7 +48,7 @@ function createTetris(rand){
 				[0,4,0,0],
 				[0,4,0,0],
 				[0,4,4,0],
-				[0,0,0,0],
+				[0,0,0,0]
 			];
 			break;
 		case 5:
@@ -48,21 +56,24 @@ function createTetris(rand){
 				[0,5,0,0],
 				[0,5,0,0],
 				[0,5,0,0],
-				[0,5,0,0],
+				[0,5,0,0]
 			];
+			break;
 		case 6:
 			matrix = [
 				[0,6,0],
 				[0,6,6],
-				[0,0,6],
+				[0,0,6]
 			];
+			break;
 		case 7:
 			matrix = [
 				[0,0,7,0],
 				[0,0,7,0],
 				[0,7,7,0],
-				[0,0,0,0],
+				[0,0,0,0]
 			];
+			break;
 	};
 	return matrix;
 }
@@ -127,7 +138,6 @@ var colors = [null,randomColor(),randomColor(),randomColor(),randomColor(),rando
 //key pressing function
 window.addEventListener('keydown',function(event){
 	//you cant use this in this case, can console.log(this) to see why
-	console.log(event); 
 	if(event.keyCode ===37){
 		player.pos.x-=1;
 		//console.log(player.pos.x);
@@ -154,6 +164,8 @@ function clearRow(){
 			boardMatrix.splice(i,1);
 			//add back a row on top such that size of board doesnt change
 			boardMatrix.splice(0,0,new Array(12).fill(0));
+			colSound.stop();
+			rowSound.play();
 		}
 	}
 }
@@ -162,15 +174,24 @@ function rotate(matrix){
 	var newArray = createMatrix(matrix.length, matrix.length);
 	var z = matrix.length-1;
 	for (var y=0;y<matrix.length;y++){
-		console.log(z);
 		for(var x=0;x<matrix.length;x++){
 			newArray[x][z]=matrix[y][x];
-			console.log(newArray);
 		}
 		z--;
 	}
-	console.log(newArray);
+	//console.log(newArray);
 	player.matrix = newArray;
+}
+
+function start(){
+	boardMatrix = createMatrix(12,20);
+	player.pos = {x: 5, y:0};
+	timeCounter = 0;
+	var scoreClass = document.getElementsByClassName("score")[0]
+	while (scoreClass.hasChildNodes()){
+		scoreClass.removeChild(scoreClass.lastChild);
+	}
+	mySound.play();
 }
 
 function reset(){
@@ -199,6 +220,9 @@ var score = 0;
 //time is a build in parameter for requestAnimationFrame where it increments time
 //set default time = 0 otherwise first value will be NaN and we need to use isNaN() on deltaTime so dropcounter dont add a NaN and kill this operation
 function update(time=0){
+	mySound = new sound("sound/Braveheart.mp3");
+	colSound = new sound("sound/screamtrim.mp3");
+	rowSound = new sound("sound/holyshit.mp3");
 	var deltaTime = time - lastTime;
 	lastTime = time; 
 
@@ -208,6 +232,7 @@ function update(time=0){
  		player.pos.y+=1;
  		dropCounter=0;
  		if (collide(boardMatrix,player)===true){
+ 			colSound.play();
  			player.pos.y -=1; //use debugger to see how many rows to deduct, in this case the block has to cross over the grid to detect collision 
  		 	addPlayerToBoard(boardMatrix,player);
  		 	//remove rows that are filled
@@ -220,7 +245,7 @@ function update(time=0){
  		}
  	}
 	//everytime update using requestAnimationFrame, we set canvas back to black
-	context.fillStyle = '#000000';
+	context.fillStyle = "#000000";
 	context.fillRect(0,0,canvas.width,canvas.height);
 	drawMatrix(player.matrix, player.pos);
 	drawMatrix(boardMatrix, {x:0,y:0});
@@ -239,4 +264,19 @@ function randomColor(){
 		color+=key.charAt(rand);
 	}
 	return color;
+}
+
+function sound(src){
+	this.sound = document.createElement("audio");
+	this.sound.src = src;
+	this.sound.setAttribute("preload","auto");
+	this.sound.setAttribute("controls","none");
+	this.sound.style.display = "none";
+	document.body.appendChild(this.sound);
+	this.play = function(){
+		this.sound.play();
+	}
+	this.stop = function(){
+		this.sound.pause();
+	}
 }
