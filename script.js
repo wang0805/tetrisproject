@@ -199,7 +199,7 @@ function reset(){
 	score = timeCounter;
 	timeCounter = 0;
 	var newDiv = document.createElement("div");
-	newDiv.innerHTML="Score: "+score+"s";
+	newDiv.innerHTML="SCORE: "+score+"s";
 	document.getElementsByClassName("score")[0].appendChild(newDiv);
 }
 
@@ -221,7 +221,6 @@ var score = 0;
 //set default time = 0 otherwise first value will be NaN and we need to use isNaN() on deltaTime so dropcounter dont add a NaN and kill this operation
 function update(time=0){
 	mySound = new sound("sound/Braveheart.mp3");
-	colSound = new sound("sound/screamtrim.mp3");
 	rowSound = new sound("sound/holyshit.mp3");
 	var deltaTime = time - lastTime;
 	lastTime = time; 
@@ -232,7 +231,6 @@ function update(time=0){
  		player.pos.y+=1;
  		dropCounter=0;
  		if (collide(boardMatrix,player)===true){
- 			colSound.play();
  			player.pos.y -=1; //use debugger to see how many rows to deduct, in this case the block has to cross over the grid to detect collision 
  		 	addPlayerToBoard(boardMatrix,player);
  		 	//remove rows that are filled
@@ -249,7 +247,7 @@ function update(time=0){
 	context.fillRect(0,0,canvas.width,canvas.height);
 	drawMatrix(player.matrix, player.pos);
 	drawMatrix(boardMatrix, {x:0,y:0});
-	document.getElementsByClassName("time")[0].innerHTML="Timer: "+timeCounter+"s";
+	document.getElementsByClassName("time")[0].innerHTML="TIMER: "+timeCounter+"s";
 	requestAnimationFrame(update);
 	//console.log(player.pos.y)
 }
