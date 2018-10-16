@@ -21,6 +21,7 @@ div {
 #tetris {
 	border-radius: 10px;
 	border: 0.5em solid white;
+	height: 70vh;
 } 
 
 .tetrisCan {
@@ -41,15 +42,12 @@ body {
 	background-repeat: repeat;
 }
 
-@media screen and (max-width : 400px) {
-	#tetris {
-		width: 50vw;
-	}
-}
-
-@media screen and (min-width : 350px) {
-/* Styles */
-	#tetris {
-		height: 70vh;
-	}
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+    z-index: -1;
+    opacity: 0.5;
 }
