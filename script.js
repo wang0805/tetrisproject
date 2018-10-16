@@ -164,7 +164,6 @@ function clearRow(){
 			boardMatrix.splice(i,1);
 			//add back a row on top such that size of board doesnt change
 			boardMatrix.splice(0,0,new Array(12).fill(0));
-			colSound.stop();
 			rowSound.play();
 		}
 	}
