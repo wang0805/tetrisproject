@@ -7,13 +7,14 @@ You can see how the game works below:
 
 [Link to Game](https://wang0805.github.io/tetrisproject/)
 
-### Built with
-
+### Tools Being Used
 * Canvas (requestAnimationFrame)
 * Javascript
 * Css/Bootstrap
 
 ### Improvements I would've made
-
 * add difficulty level by increasing speed of falling 
 * try rebuilding the game with just DOM manipulation
+
+### Author(s)
+* Wenhao Wang
