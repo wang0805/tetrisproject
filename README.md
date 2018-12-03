@@ -1,4 +1,4 @@
-# tetrisproject
+# Tetris Project
 
 ### Demo
 You can see how the game works below:
